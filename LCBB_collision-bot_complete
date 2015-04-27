@@ -57,9 +57,9 @@ const int conaccel = accel;  // constant (if needed)
 
 int slowed = false;
 
-int obsticalL = false;
-int obsticalR = false;
-int obsticalC = false;
+int obstacleL = false;
+int obstacleR = false;
+int obstacleC = false;
   
 // ***********************************************************
 // ******* SETUP BLOCK ***************************************
@@ -120,39 +120,39 @@ void loop() {
   }
 
 
-  //****** If Slowed (due to obstacle) in slowDown(), next scan L&R for obsticle position (L || R)
+  //****** If Slowed (due to obstacle) in slowDown(), next scan L&R for obstacle position (L || R)
   if (slowed == true && paused == false) {
     Serial.println("Entered if-slowed test.. about to scan R & L");
-    scanLR();     // scans for obstical and records
+    scanLR();     // scans for obstacle and records
     slowed = 0;
-    Serial.print("obsticalR="); Serial.println(obsticalR);
-    Serial.print("obsticalC="); Serial.println(obsticalC);
-    Serial.print("obsticalL="); Serial.println(obsticalL);
+    Serial.print("obstacleR="); Serial.println(obstacleR);
+    Serial.print("obstacleC="); Serial.println(obstacleC);
+    Serial.print("obstacleL="); Serial.println(obstacleL);
   }
 
 
-  //****** If obstical is in the center (and system is not paused)...
-  if ( (obsticalR == true) && (paused == false) ) {
-    Serial.println("obsticalC NOOP");     //do nothing for now
+  //****** If obstacle is in the center (and system is not paused)...
+  if ( (obstacleR == true) && (paused == false) ) {
+    Serial.println("obstacleC NOOP");     //do nothing for now
   }
 
-  //******  If obstical is on the left or right...
-  while ( (obsticalR == true || obsticalL == true) && (paused == false) ){
+  //******  If obstacle is on the left or right...
+  while ( (obstacleR == true || obstacleL == true) && (paused == false) ){
 
-    //*** If obstical is on the Right (and system is not paused), turn left and continue
-    if (obsticalR == true && paused == false) {
-      Serial.println("obsticalR action");   
+    //*** If obstacle is on the Right (and system is not paused), turn left and continue
+    if (obstacleR == true && paused == false) {
+      Serial.println("obstacleR action");   
       turnL();        // turn left
-      obsticalR = 0;
+      obstacleR = 0;
       forward();      // go forward
       break;        // breaks out of while loop (skipping other checks)
     }
   
-    //*** If obstical is on the Left (and system is not paused), turn right and continue
-    if (obsticalL == 1 && paused == false) {
-      Serial.println("obsticalL action");   
+    //*** If obstacle is on the Left (and system is not paused), turn right and continue
+    if (obstacleL == 1 && paused == false) {
+      Serial.println("obstacleL action");   
       turnR();        // turn right
-      obsticalL = 0;
+      obstacleL = 0;
       forward();      // go forward
       break;        // breaks out of while loop (skipping other checks)
     }    
@@ -204,16 +204,16 @@ void forward(){
 // ***********************************************************
 void scanLR() {
   Serial.println("Entered scanLR() ");
-  obsticalC = false;
-  obsticalR = false;
-  obsticalL = false;
+  obstacleC = false;
+  obstacleR = false;
+  obstacleL = false;
   const int scandelay = 850;
   // Scan forward
   Serial.println("scan center");
   dist = getdist();
   if (dist < 5) {
-    obsticalC = true;
-    Serial.println("   obsticalC = true");
+    obstacleC = true;
+    Serial.println("   obstacleC = true");
   }
   Serial.println("--");
 
@@ -223,8 +223,8 @@ void scanLR() {
   delay(scandelay-100);             // wait for turn
   dist = getdist();
   if (dist < 5) {
-    obsticalR = true;
-    Serial.println("   obsticalR = true");
+    obstacleR = true;
+    Serial.println("   obstacleR = true");
   }
   servoR.write(forwardR);           // return center
   delay(scandelay-100);             // 
@@ -240,8 +240,8 @@ void scanLR() {
   delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
   dist = getdist();
   if (dist < 5) {
-    obsticalL = true;
-    Serial.println("   obsticalL = true");
+    obstacleL = true;
+    Serial.println("   obstacleL = true");
   }
   servoL.write(forwardL);           // return center
   delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
