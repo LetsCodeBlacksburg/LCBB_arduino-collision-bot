@@ -1,0 +1,366 @@
+// LCBB_collision-bot_complete
+// This letscodeblacksburg.org project is for building a collision bot (from scratch) using 
+// an Arduino Uno/R3 (Atmel based), US-100 ultrasonic "ping" sensor (not the Parallax version),
+// two continuous rotation servos, a battery, approx 4"x6" piece of foam board, some milk jug
+// caps (for wheels and drag-point), and some hot glue.  Implimenting this code from scratch 
+// would take the better part of a weekend. But implimenting it in pieces (servo code, ping
+// sensor code, movement code, collision avoidance) using this as a starting place to copy from,
+// it is of course much faster.  Feel free to use/reuse that matieral. I publish it copy-left/
+// creative commons, with credits listed.
+// Thomas "Tweeks" Weeks, tweeks-homework(at)theweeks.org
+
+#include <Servo.h>
+
+// This ping-sensor code is set up for using a four pin ping sensor such as
+// the US-100 module:
+// https://www.bananarobotics.com/shop/US-100-Ultrasonic-Distance-Sensor-Module
+// http://www.iseerobot.com/produk-1255-us100-ultrasonic-sensor-for-arduino.html
+// NOTE: For this code, + the US-100 module, be sure to remove the serial-data jumper on the
+// back so that you get back the raw pulse from the echo pin (and not serial distance data).
+//
+// CAUTION: Have your code checked, and have the TA RUN IT BEFORE hooking up the US-100 ping
+//          sensor! Not doing so could damage the Arduino!
+// This is set up to direct connect power and ground for the US-100 ping sensor to be
+// on pins 10(5v) 11(ping) 12(echo) 13(low/gnd) 14(hard ground)
+
+const int powerPin = 10;    // providing power to ping sensor from pin 10
+const int pingPin = 11;     // pin we're sending the trigger/ping on
+const int echoPin = 12;     // pin we're reading back the echo on
+const int gnd1Pin = 13;     // simulated ground so we can safely plug the module into our arduinos
+//last GND pin goes to "pin 14" on the arduino or sensor shield
+
+long dist = 0;
+
+Servo servoL;  // create servo object to control a servo
+Servo servoR;  // create servo object to control a servo
+
+// Servo Tunung
+// These values are just starting points. Every servo is a little different and so you may need to fine tune each.
+// Don't forget that depending n how you have your servos mounted, a value can go "forward" on one servo but "backward" on the other.
+// You may need to tune the forward rev values to go in a straight line or turn.
+// You will probably need to tune the stopL and stopR values to get to a dead stop on each servo
+const int forwardL = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
+const int forwardR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
+const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
+const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
+
+const int stopL = 85;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+
+const int turnDelay = 500;  // Delay for turnL() turnR() to achive close to 90 degrees (at full throttle)
+
+int paused = true;        // Program starts off in paused mode
+int waspaused = true;     // Tracks state if we were previously paused (or not)
+
+int accel = 45;              // acceleration figure for turns (if needed)
+const int conaccel = accel;  // constant (if needed)
+
+int slowed = false;
+
+int obsticalL = false;
+int obsticalR = false;
+int obsticalC = false;
+  
+// ***********************************************************
+// ******* SETUP BLOCK ***************************************
+// ***********************************************************
+// only runs once at program startup
+void setup() {
+  // US-100 PING SENSOR POWER/GND SETUP
+  // set up inline, direct connect power and ground for the US-100 ping sensor to be
+  // on pins:                       
+  // US-100  \--5v-trg-echo-GND-GND--/
+  //             |   |   |   |   |
+  // Arduino     10  11  12  13  14(hard ground)
+  //
+  pinMode(gnd1Pin, OUTPUT);      // sets up ping module's inner GND pin on a low output, and
+  digitalWrite(gnd1Pin, LOW);     // the outter GND pin to hard GND (on most arduinos)
+  pinMode(powerPin, OUTPUT);
+  digitalWrite(powerPin, HIGH);  // try to power the module from pin
+  // ** US-100 PING SENSOR I/O PINS
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  pinMode(echoPin, OUTPUT);    // just to make sure
+  digitalWrite(echoPin, LOW);  // we clear any previous settings
+  pinMode(echoPin, INPUT);     // and then use it as INPUT
+  delay(500);
+  servoR.attach(5);  // attaches the left servo on pin 5
+  servoL.attach(6);  // attaches the right servo on pin 6
+  // ** Servo reset
+  //servoL.write(forwardL);               // rotate L servo, counterclockwise full speed
+  //servoR.write(reverseR);               // rotate L servo, counterclockwise full speed
+  //delay(250);                           // wait 2 seconds
+  //servoL.write(reverseL);               // rotate L servo, counterclockwise full speed
+  //servoR.write(forwardR);               // rotate L servo, counterclockwise full speed
+  //delay(250);                           // wait 2 seconds
+  //servoR.write(stopR);                  // stop
+  //servoL.write(stopL);                  // stop
+  turnL();
+  turnR();
+  // ** initialize serial communication:
+  Serial.begin(9600);
+}
+
+
+// ***********************************************************
+// ******* MAIN LOOP *****************************************
+// ***********************************************************
+// Runs forever...
+void loop() {
+
+  pauseNgo();                    // This uses the sensor as a "pause/start" toggle switch
+
+  dist = getdist();              // looks wit hping sensor to measure distance to any objects
+
+
+  //****** If object detected between 2-7 inches away (and the system is not paused), then run the slowDown() function.
+  if ( (dist > 1 && dist < 8) && (paused == false) ) {
+    slowed = false;
+    slowDown();    //quickly slows down and sets state to "slowed = true"
+  }
+
+
+  //****** If Slowed (due to obstacle) in slowDown(), next scan L&R for obsticle position (L || R)
+  if (slowed == true && paused == false) {
+    Serial.println("Entered if-slowed test.. about to scan R & L");
+    scanLR();     // scans for obstical and records
+    slowed = 0;
+    Serial.print("obsticalR="); Serial.println(obsticalR);
+    Serial.print("obsticalC="); Serial.println(obsticalC);
+    Serial.print("obsticalL="); Serial.println(obsticalL);
+  }
+
+
+  //****** If obstical is in the center (and system is not paused)...
+  if ( (obsticalR == true) && (paused == false) ) {
+    Serial.println("obsticalC NOOP");     //do nothing for now
+  }
+
+  //******  If obstical is on the left or right...
+  while ( (obsticalR == true || obsticalL == true) && (paused == false) ){
+
+    //*** If obstical is on the Right (and system is not paused), turn left and continue
+    if (obsticalR == true && paused == false) {
+      Serial.println("obsticalR action");   
+      turnL();        // turn left
+      obsticalR = 0;
+      forward();      // go forward
+      break;        // breaks out of while loop (skipping other checks)
+    }
+  
+    //*** If obstical is on the Left (and system is not paused), turn right and continue
+    if (obsticalL == 1 && paused == false) {
+      Serial.println("obsticalL action");   
+      turnR();        // turn right
+      obsticalL = 0;
+      forward();      // go forward
+      break;        // breaks out of while loop (skipping other checks)
+    }    
+  }
+
+  delay(100);
+}
+
+////////////// Everything below this is program functoions called from the main loop
+
+// ***********************************************************
+// ***** turnR() *********************************************
+// ***********************************************************
+void turnR(){
+    Serial.println("turnR()");
+    servoL.write(forwardL);           // rotate L servo forward
+    servoR.write(reverseR);           // rotate R servo reverse (which turns us right)
+    delay(turnDelay);                 // wait for full turn
+    servoR.write(stopR);              // stop
+    servoL.write(stopL);              // stop 
+}
+
+
+// ***********************************************************
+// ***** turnL() *********************************************
+// ***********************************************************
+void turnL(){
+    Serial.println("turnL()");
+    servoL.write(forwardR);           // rotate R servo forward
+    servoR.write(reverseL);           // rotate L servo reverse (which turns us left)
+    delay(turnDelay);                       // wait for full turn
+    servoR.write(stopR);              // stop
+    servoL.write(stopL);              // stop
+}
+
+
+// ***********************************************************
+// ***** forward() *********************************************
+// ***********************************************************
+void forward(){
+    Serial.println("forward()");
+    servoL.write(reverseR);           // rotate R servo forward
+    servoR.write(reverseL);           // rotate L servo forward
+}
+
+
+// ***********************************************************
+// ***** scanLR() *******************************************
+// ***********************************************************
+void scanLR() {
+  Serial.println("Entered scanLR() ");
+  obsticalC = false;
+  obsticalR = false;
+  obsticalL = false;
+  const int scandelay = 850;
+  // Scan forward
+  Serial.println("scan center");
+  dist = getdist();
+  if (dist < 5) {
+    obsticalC = true;
+    Serial.println("   obsticalC = true");
+  }
+  Serial.println("--");
+
+  // Scan Right
+  Serial.println("scan right");
+  servoR.write(reverseR);           // rotate R servo reverse
+  delay(scandelay-100);             // wait for turn
+  dist = getdist();
+  if (dist < 5) {
+    obsticalR = true;
+    Serial.println("   obsticalR = true");
+  }
+  servoR.write(forwardR);           // return center
+  delay(scandelay-100);             // 
+  Serial.println("--");
+  servoR.write(stopR);              // stop
+  servoL.write(stopL);              // stop
+  delay(250);
+
+
+  // Scan Left
+  Serial.println("scan left");
+  servoL.write(reverseL);           // rotate L servo reverse
+  delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
+  dist = getdist();
+  if (dist < 5) {
+    obsticalL = true;
+    Serial.println("   obsticalL = true");
+  }
+  servoL.write(forwardL);           // return center
+  delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
+  Serial.println("--");
+  servoR.write(stopR);              // stop
+  servoL.write(stopL);              // stop
+  delay(250);
+}
+
+// ***********************************************************
+// ***** getdist() *******************************************
+// ***********************************************************
+long getdist()
+{
+  // establish variables for duration of the ping,
+  // and the distance result in inches and centimeters:
+  long duration, inches, cm;
+
+  // The PING))) is triggered by a HIGH pulse of 2 or more microseconds.
+  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+  digitalWrite(pingPin, HIGH);      // start the outgoing ping
+  delayMicroseconds(10);            // do the ping for 10uS
+  digitalWrite(pingPin, LOW);       // stop doing the ping
+  duration = pulseIn(echoPin, HIGH);  // grab the delay of return echo
+  // convert the time into a distance
+  inches = microsecondsToInches(duration);
+  //cm = microsecondsToCentimeters(duration);
+  //Serial.print(inches);
+  //Serial.print("in, ");
+  //Serial.print(cm);
+  //Serial.print("cm");
+  //Serial.println();
+
+  return (inches);
+}
+
+
+// ***********************************************************
+// ***** pauseNgo() ******************************************
+// ***********************************************************
+void pauseNgo() {
+
+  // If unpaused, but object less than two inches, go into paused mode
+  dist = getdist();
+  if (paused == false && dist < 2){
+        Serial.println("UNPAUSED - I GO UNTIL I SEE SOMETHING CLOSE...");
+  }
+  while (paused == false && dist < 2 ) {
+    dist = getdist();
+    if (dist < 2 ) {
+      paused = 1;
+      Serial.println("ALL STOP");
+      // Stop
+      servoL.write(stopL);                  // stop L servo
+      servoR.write(stopR);                  // stop R servo
+      paused = 1;
+      waspaused = 0;
+      delay(250);
+    }
+  }
+  
+
+  // Paused Loop & Unpausing Detection  
+  dist = getdist();
+  if (paused == true){
+    Serial.println("PAUSED - UNTIL I SEE SOMETHING CLOSE...");
+  }
+  while (paused == true) {
+    dist = getdist();
+    Serial.print(dist);
+    Serial.print(" ");
+    if (dist < 2 ) {
+      Serial.println("");
+      Serial.println("ALL AHEAD");
+      // Start moving forward, full speed
+      servoL.write(forwardL);                  // forward L servo
+      servoR.write(forwardR);                  // forward R servo
+      paused = 0;
+      waspaused = 1;
+    }
+  }
+  
+  
+}
+
+// ***********************************************************
+// ***** slowDown() ******************************************
+// ***********************************************************
+void slowDown() {
+  Serial.println("ENTERED slowDown()");
+  accel = 0;
+  for ( int x = 0 ; x < 8 ; x++ ) {
+    accel =  accel + 5;
+    servoL.write(forwardL - accel);                // slow L servo
+    servoR.write(forwardR + accel);                // slow R servo
+    delay(50);
+  }
+  servoL.write(stopL);                  // stop L servo
+  servoR.write(stopR);                  // stop R servo
+  accel = conaccel;
+  slowed = 1;
+  waspaused = 0;
+}
+
+// Original code from the ping sensor library
+long microsecondsToInches(long microseconds)
+{
+  // According to Parallax's datasheet for the PING))), there are
+  // 73.746 microseconds per inch (i.e. sound travels at 1130 feet per
+  // second).  This gives the distance travelled by the ping, outbound
+  // and return, so we divide by 2 to get the distance of the obstacle.
+  // See: http://www.parallax.com/dl/docs/prod/acc/28015-PING-v1.3.pdf
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds)
+{
+  // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+  // The ping travels out and back, so to find the distance of the
+  // object we take half of the distance travelled.
+  return microseconds / 29 / 2;
+}
