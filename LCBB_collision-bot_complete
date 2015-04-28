@@ -48,6 +48,7 @@ const int stopL = 85;    // 90 is usually "stopped" (you may need to fine tune i
 const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
 
 const int turnDelay = 500;  // Delay for turnL() turnR() to achive close to 90 degrees (at full throttle)
+const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
 
 int paused = true;        // Program starts off in paused mode
 int waspaused = true;     // Tracks state if we were previously paused (or not)
@@ -130,31 +131,50 @@ void loop() {
     Serial.print("obstacleL="); Serial.println(obstacleL);
   }
 
+  //******  If obstacle is on the left, center or right...
+  while ( (obstacleR == true || obstacleC == true || obstacleL == true ) && (paused == false) ){
+      Serial.println("While (obstacle L||R)...");   
 
-  //****** If obstacle is in the center (and system is not paused)...
-  if ( (obstacleR == true) && (paused == false) ) {
-    Serial.println("obstacleC NOOP");     //do nothing for now
-  }
+    //*** If obstacle in center (front), but none on the Right OR Left, then turn left and continue
+    if (obstacleR == false && obstacleL == false && obstacleC == true && paused == false) {
+      Serial.println("obstacleC only action");   
+      slowed = 0;
+      backward();         // back up a little
+      delay(backDelay);   //
+      turnL();            // if only something in front of us, just default turn left
+      obstacleC = false;  // reset
+      obstacleR = false;  // reset
+      obstacleL = false;  // reset
+      forward();          // go forward
+      break;              // breaks out of while loop (skipping other checks)
+    }
 
-  //******  If obstacle is on the left or right...
-  while ( (obstacleR == true || obstacleL == true) && (paused == false) ){
-
-    //*** If obstacle is on the Right (and system is not paused), turn left and continue
+    //*** If obstacle is on the Right only (and system is not paused), turn left and continue
     if (obstacleR == true && paused == false) {
       Serial.println("obstacleR action");   
-      turnL();        // turn left
-      obstacleR = 0;
-      forward();      // go forward
-      break;        // breaks out of while loop (skipping other checks)
+      slowed = 0;
+      backward();         // back up a little
+      delay(backDelay);   //
+      turnL();            // turn left
+      obstacleC = false;  // reset
+      obstacleR = false;  // reset
+      obstacleL = false;  // reset
+      forward();          // go forward
+      break;              // breaks out of while loop (skipping other checks)
     }
   
-    //*** If obstacle is on the Left (and system is not paused), turn right and continue
-    if (obstacleL == 1 && paused == false) {
+    //*** If obstacle is on the Left only (and system is not paused), turn right and continue
+    if (obstacleL == true && paused == false) {
       Serial.println("obstacleL action");   
-      turnR();        // turn right
-      obstacleL = 0;
-      forward();      // go forward
-      break;        // breaks out of while loop (skipping other checks)
+      slowed = 0;
+      backward();         // back up a little
+      delay(backDelay);   //
+      turnR();            // turn right
+      obstacleC = false;  // reset
+      obstacleR = false;  // reset
+      obstacleL = false;  // reset
+      forward();          // go forward
+      break;              // breaks out of while loop (skipping other checks)
     }    
   }
 
@@ -198,22 +218,35 @@ void forward(){
     servoR.write(reverseL);           // rotate L servo forward
 }
 
+// ***********************************************************
+// ***** backward() *********************************************
+// ***********************************************************
+void backward(){
+    Serial.println("backward()");
+    servoL.write(forwardR);           // rotate R servo forward
+    servoR.write(forwardL);           // rotate L servo forward
+}
+
+
 
 // ***********************************************************
 // ***** scanLR() *******************************************
 // ***********************************************************
 void scanLR() {
   Serial.println("Entered scanLR() ");
+  int obstacleThold = 10;
   obstacleC = false;
   obstacleR = false;
   obstacleL = false;
   const int scandelay = 850;
+
   // Scan forward
   Serial.println("scan center");
   dist = getdist();
-  if (dist < 5) {
+  if (dist <= obstacleThold) {
     obstacleC = true;
-    Serial.println("   obstacleC = true");
+    Serial.print(dist);
+    Serial.println("in.   obstacleC = true");
   }
   Serial.println("--");
 
@@ -222,9 +255,10 @@ void scanLR() {
   servoR.write(reverseR);           // rotate R servo reverse
   delay(scandelay-100);             // wait for turn
   dist = getdist();
-  if (dist < 5) {
+  if (dist <= obstacleThold) {
     obstacleR = true;
-    Serial.println("   obstacleR = true");
+    Serial.print(dist);
+    Serial.println("in.   obstacleR = true");
   }
   servoR.write(forwardR);           // return center
   delay(scandelay-100);             // 
@@ -234,14 +268,15 @@ void scanLR() {
   delay(250);
 
 
-  // Scan Left
+   // Scan Left
   Serial.println("scan left");
   servoL.write(reverseL);           // rotate L servo reverse
   delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
   dist = getdist();
-  if (dist < 5) {
+  if (dist <= obstacleThold) {
     obstacleL = true;
-    Serial.println("   obstacleL = true");
+    Serial.print(dist);
+    Serial.println("in.   obstacleL = true");
   }
   servoL.write(forwardL);           // return center
   delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
