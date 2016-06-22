@@ -50,8 +50,41 @@ void setup() {
   digitalWrite(echoPin, LOW);  // we clear any previous settings
   pinMode(echoPin, INPUT);     // and then use it as INPUT
   delay(500);
+
+  // Laser Setup
+  pinMode(laserGnd, OUTPUT);    // Laser GND pin
+  digitalWrite(laserGnd, LOW);
+  pinMode(laserPin, OUTPUT);    // Laser Power (Vcc) Pin 
+  digitalWrite(laserPin, HIGH);  // Test pulse laser
+  delay(250);                   // for 1/4 second
+  digitalWrite(laserPin, LOW);  // Start off with laser off
+  
+
+
+
+
   Serial.begin(9600);
 }
+
+
+
+
+// ***********************************************************
+// ***** fireLaser() *********************************************
+// ***********************************************************
+void fireLaser(int count){
+    int x=0;
+    for (x=1;x<(count+1);x++){
+    Serial.println("fire()");
+    digitalWrite(laserPin, HIGH); // Pulse laser
+    delay(250);                   // for 1/4 second
+    digitalWrite(laserPin, LOW);  // Start off with laser off 
+    delay(250);                   // for 1/4 second    
+    }
+
+}
+
+
 
 
 // ***********************************************************
@@ -64,6 +97,10 @@ void loop() {
   Serial.print("Distance = ");
   Serial.println(dist);
   delay(100);
+
+
+  fireLaser(1);	// fire the impressive 5,000 microWatt 650nM laser cannon z times
+
 }
 
 // ***********************************************************
