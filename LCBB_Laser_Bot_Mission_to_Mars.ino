@@ -48,7 +48,7 @@ const int stopR = 88;    // 90 is usually "stopped" (you may need to fine tune u
 
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
 const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
-const int angleMult = 7;     // Multiplier to convert turn angle into miliseconds of wheel movement (6 for tile, 7 for carpet)
+const int angleMult = 6;     // Multiplier to convert turn angle into miliseconds of wheel movement (6 for tile, 7 for carpet)
 const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
 
 int paused = true;        // Program starts off in paused mode
