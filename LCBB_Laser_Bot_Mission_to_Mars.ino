@@ -25,8 +25,8 @@ const int gnd1Pin = 13;     // simulated ground so we can safely plug the module
 //last GND pin goes to "pin 14" on the arduino or sensor shield (not all ping sensors have this pin)
 
 // Here is where we hook up the 5mW laser diode. We provide power and ground from the digital output pins.
-const int laserPin = 8;      // Pin the laser power is on
-const int laserGnd = 6;      // Pin the laser ground in on
+const int laserPin = 4;      // Pin the laser power is on
+const int laserGnd = 2;      // Pin the laser ground in on
 
 long dist = 0;
 
@@ -43,7 +43,7 @@ const int forwardR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 i
 const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
 const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 
-const int stopL = 89;    // 90 is usually "stopped" (you may need to fine tune up/down for dead stop)
+const int stopL = 93;  // 90 is usually "stopped" (you may need to fine tune up/down for dead stop)
 const int stopR = 88;    // 90 is usually "stopped" (you may need to fine tune up/down it for dead stop)
 
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
@@ -376,7 +376,7 @@ void loop() {      // anything starting with "//" is just a comment :)
   ////// Insert and fill in your code here
 
   forward(10);      // This tells the bot how many inches forward to go.  
-  
+  fireLaser(3);
   
    ////// end of your code
 
@@ -385,17 +385,17 @@ void loop() {      // anything starting with "//" is just a comment :)
 }
 ////// HELP WITH COMMANDS:
 ////// The commands available to you are below. Just copy/paste them to your own code and uncommend them:
-//forward(x);	// goes forward x inches
-//backward(x);  // goes backwards x inches				 
-//turnL(y);	// turns left around y degrees		
-//turnR(y);	// turns right around y degrees			      
-//slowDown();	// slows to a dramatic stop		
-//stopAll();	// Stops both L & R wheels		
-//fireLaser(z);	// fire the impressive 5,000 microWatt 650nM laser cannon z times
+//forward(x);  // goes forward x inches
+//backward(x);  // goes backwards x inches         
+//turnL(y); // turns left around y degrees    
+//turnR(y); // turns right around y degrees           
+//slowDown(); // slows to a dramatic stop   
+//stopAll();  // Stops both L & R wheels    
+//fireLaser(z); // fire the impressive 5,000 microWatt 650nM laser cannon z times
 
 // Some of the more advanced commands:
 //pauseNgo();     // uses the ping sensor as a "start/pause" switch
-//pause();	  //  sets the bot to pause (and wait) mode
+//pause();    //  sets the bot to pause (and wait) mode
 //dist=getdist(); // looks with ping sensor to get distance to objects
 //if ( dist < 4) { //do stuff }  // if allows you to compare things and then do stuff if true.
 //while ( condition ) { //do stuff }  // while will do things forever (or until condition fails)
