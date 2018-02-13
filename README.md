@@ -2,12 +2,12 @@
 This is the code for the Let's Code Blacksburg Arduino, Sensors, Robotics Workshop
 https://www.eventbrite.com/e/18949799360
 
-The collision-bot workshop steps you through building a foam board, arduino based collision-avoidance bot. See PDF instruction and code.  You can buy all the parts off Amazon or AliExpress.com for around $30. 
+The collision-bot workshop build document steps you through building a foam board, arduino based collision-avoidance bot. See PDF instruction and code.  You can buy all the parts off Amazon or AliExpress.com for around $30. 
 
 ## Collision-Bot Workshop:
 To get started..
 
-1.  Download the PDF instrtuctions and build the bot (requires 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor and hto glue.)
+1.  Download the workshop build doc PDF and build the bot (requires 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
 
 2. Download ping_US-100_sensor.ino fist.. build/upload and THEN hook up the US-100 ping sensor (do not connect ping sensor until you have uploaded/run the code!)
 
