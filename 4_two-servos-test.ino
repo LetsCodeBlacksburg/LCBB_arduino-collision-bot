@@ -28,7 +28,7 @@ const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 i
 const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
 const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
-const int angleMult = 6;     // Tile/Carpet multiplier to aplify/dampen turn angle (for tile=6, carpet=7)
+const int angleMult = 7;     // Tile/Carpet multiplier to aplify/dampen turn angle (for tile=6, carpet=7)
 const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
 
 void setup() {
