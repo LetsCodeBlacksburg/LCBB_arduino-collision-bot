@@ -9,14 +9,18 @@ To get started..
 
 1.  Download the workshop build doc PDF (PDF_arduino-robotics-collision-bot.pdf	) and build the bot (requires 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
 
-2. Download ping_US-100_sensor.ino fist.. build/upload and THEN hook up the US-100 ping sensor (do not connect ping sensor until you have uploaded/run the code!)
+2. Download and run the 2_blink test code and verify your arduino hardware and software are working
 
-3. Download the two-servo-test.ino sevo motor test code and tune forwardL, forwardR, stopL and stopR values for straight movement and solid stopping
+3. Next, download 3_ping_US-100_and_laser.ino.. build/upload and THEN hook up the US-100 ping sensor (do not connect ping sensor until you have uploaded/run the code!)
 
-4. Combine ping and sevo code to make autonomous bot
+4. Download the 4_two-servos-test.ino code, tune the stopL, stopR values solid stopAll() functionality (and optionally forwardL, forwardR values to ensure your bot goes in a straight line).
 
-You should be able to code your very own collision-avoidance bot.  
-If you want to see a more complete version, check out the LCBB_collision-bot_complete.ino code.
+5. Completing the bot's code:
+* 5a For experienced coders, combine ping and sevo code to make autonomous bot
+* 5b For inexperienced coders, download the 5b_collision-bot_complete.ino code and tune your stopL and stopR values
+* 5c For doing the "Mission to Mars" mission, download 5c_Laser_Bot_Mission_to_Mars.ino code and program bot movements on another planet!
+
+Taking this workshop to the next level, using getDist() to detect objects in the bot's path, you should be able to code your very own autonomous collision-avoiding robot, or shoot things with the laser that get in the path of your robot!
 
 ## Here's the parts list:
 * Arduino (brain, 1x) - https://www.amazon.com/dp/B01E8LKITO/ ($10)
@@ -26,8 +30,8 @@ If you want to see a more complete version, check out the LCBB_collision-bot_com
 * 9V Battery Case - https://www.amazon.com/dp/B06WGQKJ5P ($5)
 * 9V Battery (~$2)
 
-The Laser-Bot Mission to Mars uses the collision-bot chassis, add a laser diode to make a mission to marse lab where the student has to program the laser-bot rover to it's target and blast the alien ship.
-
+The Laser-Bot Mission to Mars uses the collision-bot chassis, adds a laser diode to make a mission to Mars lab where the student has to program the laser-bot rover to it's target and blast the alien ship. See photos here:
+https://www.flickr.com/photos/cultureinstigator/albums/72157670487243765
 
 All LCBB code and related materials are copy left (open sourced) under the Creative Commons (CC)(BY)(SA)[1] License.
 
