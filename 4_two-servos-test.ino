@@ -19,8 +19,8 @@ Servo servoR;  // this creates the servo object to control the bot's RIGHT servo
 //           on one servo but "backward" on the other.
 //
 // MOTOR DEFAULTS: You will probably need to fine tune the stopL and stopR values to get to a dead stop on each servo
-const int stopL = 85;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
-const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+const int stopL = 89;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+const int stopR = 89;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
 // You may need to tune the forward rev values to go in a straight line or turn reliably.
 const int forwardL = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 const int forwardR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
@@ -28,7 +28,7 @@ const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 i
 const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
 const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
-const int angleMult = 6;     // Multiplier to convert turn angle into miliseconds of wheel movement (6 for tile, 7 for carpet)
+const int angleMult = 6;     // Tile/Carpet multiplier to aplify/dampen turn angle (for tile=6, carpet=7)
 const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
 
 void setup() {
@@ -98,14 +98,14 @@ void backward(int inches){
     Serial.println("backward()");
     servoL.write(forwardR);           // rotate R servo forward (weird, I know)
     servoR.write(forwardL);           // rotate L servo forward
-    delay( (inches * inchesMult));           // roughly convert inches to miliseconds of wheel rotations
+    delay( (inches * inchesMult));    // roughly convert inches to miliseconds of wheel rotations
     stopAll();
 }
 
 // ***********************************************************
-// ***** stopall() *********************************************
+// ***** stopAll() *********************************************
 // ***********************************************************
-void stopall(){
+void stopAll(){
     // stops
     Serial.println("stopall()");
     servoR.write(stopR);              // stop
