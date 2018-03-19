@@ -1,0 +1,17 @@
+/* Blink
+   Turns on an LED (on pin 13) on for one second, then off for one second, repeatedly. */
+
+int LED=13;       // this is the variable LED that points to the pin number that the built in LED is hooked to
+
+// the setup function runs once when you power up the arduino or press reset
+void setup() {
+  pinMode(LED, OUTPUT);   // initialize digital pin LED (13) as an output.
+}
+
+// the loop function runs over and over again forever
+void loop() {
+  digitalWrite(LED, HIGH);           // writes a digital HIGH ("on" or 5v) to turn the LED on
+  delay(1000);                       // wait for a second
+  digitalWrite(LED, LOW);            // turn the LED off by making the voltage LOW
+  delay(1000);                       // wait for a second
+}
