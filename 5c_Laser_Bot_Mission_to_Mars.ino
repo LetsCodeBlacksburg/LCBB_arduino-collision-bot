@@ -1,4 +1,4 @@
-// LCBB_laser-bot_mission_to_mars
+// 5c_laser-bot_mission_to_mars
 // This letscodeblacksburg.org project is for using the existing LCBB collision bot build, adding 
 // a laser to it, and making an easy, "macro mission" for kids to program and fire a laser at aliens.
 // Example code and documentation at https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot
