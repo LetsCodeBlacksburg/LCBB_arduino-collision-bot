@@ -7,7 +7,7 @@ The collision-bot workshop build document steps you through building a foam boar
 ## Collision-Bot Workshop:
 To get started..
 
-1.  Download the workshop build doc PDF and build the bot (requires 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
+1.  Download the workshop build doc PDF (PDF_arduino-robotics-collision-bot.pdf	) and build the bot (requires 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
 
 2. Download ping_US-100_sensor.ino fist.. build/upload and THEN hook up the US-100 ping sensor (do not connect ping sensor until you have uploaded/run the code!)
 
