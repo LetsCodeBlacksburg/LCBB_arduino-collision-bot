@@ -24,8 +24,8 @@ const int echoPin = 12;     // pin we're reading back the echo on
 const int gnd1Pin = 13;     // simulated ground so we can safely plug the module into our arduinos
 //last GND pin goes to "pin 14" on the arduino or sensor shield (not all ping sensors have this pin)
 
-// Here is where we hook up the 5mW laser diode. We provide power and ground from the digital output pins.
-const int laserPin = 4;      // Pin the laser power is on
+// Here is where we hook up the 5mW laser diode. We provide power and ground from the digital output pins 2 and 4.
+const int laserPin = 3;      // Pin the laser power is on
 const int laserGnd = 2;      // Pin the laser ground in on
 
 long dist = 0;
