@@ -1,4 +1,4 @@
-// LCBB_collision-bot_complete
+// 5b_collision-bot_complete
 // This letscodeblacksburg.org project is for building a collision bot (from scratch) using 
 // an Arduino Uno/R3 (Atmel based), US-100 ultrasonic "ping" sensor (not the Parallax version),
 // two continuous rotation servos, a battery, approx 4"x6" piece of foam board, some milk jug
@@ -10,6 +10,8 @@
 // Thomas "Tweeks" Weeks, tweeks-homework(at)theweeks.org
 
 #include <Servo.h>
+Servo servoL;  // this creates the servo object to control the bot's LEFT servo
+Servo servoR;  // this creates the servo object to control the bot's RIGHT servo
 
 // This ping-sensor code is set up for using a four pin ping sensor such as
 // the US-100 module:
@@ -31,24 +33,24 @@ const int gnd1Pin = 13;     // simulated ground so we can safely plug the module
 
 long dist = 0;
 
-Servo servoL;  // create servo object to control a servo
-Servo servoR;  // create servo object to control a servo
-
-// Servo Tunung
+// Servo Tuning
 // These values are just starting points. Every servo is a little different and so you may need to fine tune each.
-// Don't forget that depending n how you have your servos mounted, a value can go "forward" on one servo but "backward" on the other.
-// You may need to tune the forward rev values to go in a straight line or turn.
-// You will probably need to tune the stopL and stopR values to get to a dead stop on each servo
+//     NOTE: Don't forget that depending on how you have your servos mounted, a value can go "forward" 
+//           on one servo but "backward" on the other.
+//
+// MOTOR DEFAULTS: You will probably need to fine tune the stopL and stopR values to get to a dead stop on each servo
+const int stopL = 89;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+const int stopR = 89;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
+// You may need to tune the forward rev values to go in a straight line or turn reliably.
 const int forwardL = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 const int forwardR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
 const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
 const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
-
-const int stopL = 85;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
-const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune it for dead stop)
-
-const int turnDelay = 500;  // Delay for turnL() turnR() to achive close to 90 degrees (at full throttle)
+// These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
+const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
+const int angleMult = 6;     // Tile/Carpet multiplier to aplify/dampen turn angle (for tile=6, carpet=7)
 const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
+
 
 int paused = true;        // Program starts off in paused mode
 int waspaused = true;     // Tracks state if we were previously paused (or not)
@@ -85,20 +87,13 @@ void setup() {
   digitalWrite(echoPin, LOW);  // we clear any previous settings
   pinMode(echoPin, INPUT);     // and then use it as INPUT
   delay(500);
+  // Servo setup
   servoR.attach(5);  // attaches the left servo on pin 5
   servoL.attach(6);  // attaches the right servo on pin 6
-  // ** Servo reset
-  //servoL.write(forwardL);               // rotate L servo, counterclockwise full speed
-  //servoR.write(reverseR);               // rotate L servo, counterclockwise full speed
-  //delay(250);                           // wait 2 seconds
-  //servoL.write(reverseL);               // rotate L servo, counterclockwise full speed
-  //servoR.write(forwardR);               // rotate L servo, counterclockwise full speed
-  //delay(250);                           // wait 2 seconds
-  //servoR.write(stopR);                  // stop
-  //servoL.write(stopL);                  // stop
-  turnL();
-  turnR();
-  // ** initialize serial communication:
+  // little initialization dance
+  turnL(20);
+  turnR(20);
+  // initialize serial communication:
   Serial.begin(9600);
 }
 
@@ -110,8 +105,9 @@ void setup() {
 void loop() {
 
   pauseNgo();                    // This uses the sensor as a "pause/start" toggle switch
+                                 // Wave your hand (less than two inches) in front of ping to go (unpause)
 
-  dist = getdist();              // looks wit hping sensor to measure distance to any objects
+  dist = getdist();              // looks with ping sensor to measure distance to any objects in front of bot
 
 
   //****** If object detected between 2-7 inches away (and the system is not paused), then run the slowDown() function.
@@ -141,7 +137,7 @@ void loop() {
       slowed = 0;
       backward();         // back up a little
       delay(backDelay);   //
-      turnL();            // if only something in front of us, just default turn left
+      turnL(120);            // if only something in front of us, just default turn left
       obstacleC = false;  // reset
       obstacleR = false;  // reset
       obstacleL = false;  // reset
@@ -155,7 +151,7 @@ void loop() {
       slowed = 0;
       backward();         // back up a little
       delay(backDelay);   //
-      turnL();            // turn left
+      turnL(120);            // turn left
       obstacleC = false;  // reset
       obstacleR = false;  // reset
       obstacleL = false;  // reset
@@ -169,7 +165,7 @@ void loop() {
       slowed = 0;
       backward();         // back up a little
       delay(backDelay);   //
-      turnR();            // turn right
+      turnR(120);            // turn right
       obstacleC = false;  // reset
       obstacleR = false;  // reset
       obstacleL = false;  // reset
@@ -186,48 +182,57 @@ void loop() {
 // ***********************************************************
 // ***** turnR() *********************************************
 // ***********************************************************
-void turnR(){
+void turnR(int angle){
     Serial.println("turnR()");
     servoL.write(forwardL);           // rotate L servo forward
     servoR.write(reverseR);           // rotate R servo reverse (which turns us right)
-    delay(turnDelay);                 // wait for full turn
-    servoR.write(stopR);              // stop
-    servoL.write(stopL);              // stop 
+    delay(angle*angleMult);                  // delay this amount to acheive angle
+    stopAll();
 }
-
 
 // ***********************************************************
 // ***** turnL() *********************************************
 // ***********************************************************
-void turnL(){
+void turnL(int angle){
     Serial.println("turnL()");
     servoL.write(forwardR);           // rotate R servo forward
     servoR.write(reverseL);           // rotate L servo reverse (which turns us left)
-    delay(turnDelay);                       // wait for full turn
-    servoR.write(stopR);              // stop
-    servoL.write(stopL);              // stop
+    delay(angle*angleMult);                  // delay this amount to acheive angle
+    stopAll();
 }
 
 
 // ***********************************************************
 // ***** forward() *********************************************
 // ***********************************************************
-void forward(){
+void forward(int inches){
     Serial.println("forward()");
-    servoL.write(reverseR);           // rotate R servo forward
+    servoL.write(reverseR);           // rotate R servo forward (weird, I know)
     servoR.write(reverseL);           // rotate L servo forward
+    delay( (inches * inchesMult));           // roughly convert inches to miliseconds of wheel rotations
+    stopAll();
 }
 
 // ***********************************************************
 // ***** backward() *********************************************
 // ***********************************************************
-void backward(){
+void backward(int inches){
     Serial.println("backward()");
-    servoL.write(forwardR);           // rotate R servo forward
+    servoL.write(forwardR);           // rotate R servo forward (weird, I know)
     servoR.write(forwardL);           // rotate L servo forward
+    delay( (inches * inchesMult));    // roughly convert inches to miliseconds of wheel rotations
+    stopAll();
 }
 
-
+// ***********************************************************
+// ***** stopAll() *********************************************
+// ***********************************************************
+void stopAll(){
+    // stops
+    Serial.println("stopall()");
+    servoR.write(stopR);              // stop
+    servoL.write(stopL);              // stop
+}
 
 // ***********************************************************
 // ***** scanLR() *******************************************
@@ -263,8 +268,7 @@ void scanLR() {
   servoR.write(forwardR);           // return center
   delay(scandelay-100);             // 
   Serial.println("--");
-  servoR.write(stopR);              // stop
-  servoL.write(stopL);              // stop
+  stopAll();
   delay(250);
 
 
@@ -281,8 +285,7 @@ void scanLR() {
   servoL.write(forwardL);           // return center
   delay(scandelay+100);             // turns further left (gets out of perfect perpendicular objects, getting out to the left)
   Serial.println("--");
-  servoR.write(stopR);              // stop
-  servoL.write(stopL);              // stop
+  stopAll();
   delay(250);
 }
 
@@ -330,8 +333,7 @@ void pauseNgo() {
       paused = 1;
       Serial.println("ALL STOP");
       // Stop
-      servoL.write(stopL);                  // stop L servo
-      servoR.write(stopR);                  // stop R servo
+      stopAll();
       paused = 1;
       waspaused = 0;
       delay(250);
@@ -374,8 +376,7 @@ void slowDown() {
     servoR.write(forwardR + accel);                // slow R servo
     delay(50);
   }
-  servoL.write(stopL);                  // stop L servo
-  servoR.write(stopR);                  // stop R servo
+  stopAll();
   accel = conaccel;
   slowed = 1;
   waspaused = 0;
