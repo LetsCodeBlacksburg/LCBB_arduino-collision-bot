@@ -18,7 +18,7 @@ To get started..
 5. Completing the bot's code:
 * 5a For experienced coders, combine ping and sevo code to make autonomous bot
 * 5b For inexperienced coders, download the 5b_collision-bot_complete.ino code and tune your stopL and stopR values
-* 5c For doing the ["Mission to Mars" mission PDF](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/2016-03-19_arduino-robotics-laser-bot-lab.pdf), and download [5c_Laser_Bot_Mission_to_Mars.ino code](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/5c_Laser_Bot_Mission_to_Mars.ino) and program bot movements on another planet! (can you find and fix the laser cannon bug?)
+* 5c For doing the ["Mission to Mars" mission PDF](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/arduino-robotics-laser-bot-lab.pdf), and download [5c_Laser_Bot_Mission_to_Mars.ino code](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/5c_Laser_Bot_Mission_to_Mars.ino) and program bot movements on another planet! (can you find and fix the laser cannon bug?)
 
 Taking this workshop to the next level, using getDist() to detect objects in the bot's path, you should be able to code your very own autonomous collision-avoiding robot, or shoot things with the laser that get in the path of your robot!
 
