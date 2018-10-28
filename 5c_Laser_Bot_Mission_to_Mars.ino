@@ -3,6 +3,44 @@
 // a laser to it, and making an easy, "macro mission" for kids to program and fire a laser at aliens.
 // Example code and documentation at https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot
 // Thomas "Tweeks" Weeks, tweeks-homework(at)theweeks.org
+// *NOTE* There's an error in the laser hardware configuration code. Can hyou find it?
+
+
+// ***********************************************************
+// ******* MAIN LOOP *****************************************
+// ***********************************************************
+// Runs forever...
+void loop() {      // anything starting with "//" is just a comment :)
+  pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
+
+
+  ////// Insert and fill in your code here
+  forward(10);      // This tells the bot how many inches forward to go.  
+  fireLaser(3);
+  ////// end of your code
+
+  pause();          // Sets bot to pause mode
+  // loops back to top of main loop()
+}
+////// HELP WITH COMMANDS:
+////// The commands available to you are below. Just copy/paste them to your own code and uncommend them:
+//forward(x);  // goes forward x inches
+//backward(x);  // goes backwards x inches         
+//turnL(y); // turns left around y degrees    
+//turnR(y); // turns right around y degrees           
+//slowDown(); // slows to a dramatic stop   
+//stopAll();  // Stops both L & R wheels    
+//fireLaser(z); // fire the impressive 5,000 microWatt 650nM laser cannon z times
+
+// Some of the more advanced commands:
+//pauseNgo();     // uses the ping sensor as a "start/pause" switch
+//pause();    //  sets the bot to pause (and wait) mode
+//dist=getdist(); // looks with ping sensor to get distance to objects
+//if ( dist < 4) { //do stuff }  // if allows you to compare things and then do stuff if true.
+//while ( condition ) { //do stuff }  // while will do things forever (or until condition fails)
+
+////////////// Everything below this is program functoions called from the main loop
+
 
 #include <Servo.h>
 
@@ -359,43 +397,3 @@ long microsecondsToCentimeters(long microseconds)
   // object we take half of the distance travelled.
   return microseconds / 29 / 2;
 }
-
-
-
-////////////// Everything above this is program functoions called from the main loop
-
-
-// ***********************************************************
-// ******* MAIN LOOP *****************************************
-// ***********************************************************
-// Runs forever...
-void loop() {      // anything starting with "//" is just a comment :)
-  pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
-
-
-  ////// Insert and fill in your code here
-
-  forward(10);      // This tells the bot how many inches forward to go.  
-  fireLaser(3);
-  
-   ////// end of your code
-
-  pause();          // Sets bot to pause mode
-  // loops back to top of main loop()
-}
-////// HELP WITH COMMANDS:
-////// The commands available to you are below. Just copy/paste them to your own code and uncommend them:
-//forward(x);  // goes forward x inches
-//backward(x);  // goes backwards x inches         
-//turnL(y); // turns left around y degrees    
-//turnR(y); // turns right around y degrees           
-//slowDown(); // slows to a dramatic stop   
-//stopAll();  // Stops both L & R wheels    
-//fireLaser(z); // fire the impressive 5,000 microWatt 650nM laser cannon z times
-
-// Some of the more advanced commands:
-//pauseNgo();     // uses the ping sensor as a "start/pause" switch
-//pause();    //  sets the bot to pause (and wait) mode
-//dist=getdist(); // looks with ping sensor to get distance to objects
-//if ( dist < 4) { //do stuff }  // if allows you to compare things and then do stuff if true.
-//while ( condition ) { //do stuff }  // while will do things forever (or until condition fails)
