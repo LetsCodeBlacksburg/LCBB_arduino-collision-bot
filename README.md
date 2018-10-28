@@ -1,6 +1,6 @@
 ## Overview
 <IMG SRC=http://theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=400>
-This is the code for the three hour, hands on [Let's Code Blacksburg Collision-Bot arduino Robotics Workshop] (https://www.eventbrite.com/e/18949799360).. as well as the shorter, more intro level [Martian Laser-Bot coding activity] (https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/arduino-robotics-laser-bot-lab.pdf).
+This is the code for the three hour, hands on [Lets Code Blacksburg Collision-Bot arduino Robotics Workshop](https://www.eventbrite.com/e/18949799360).. as well as the shorter, more intro level [Martian Laser-Bot coding activity] (https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/arduino-robotics-laser-bot-lab.pdf).
 
 The collision-bot (aka "Laser Bot") workshop build document steps you through building a foam board, arduino based collision-avoidance bot. See PDF instruction and code below.  The collision-bot workshop takes around 3 hours and you can buy all the parts off Amazon or AliExpress.com for around $30.
 
