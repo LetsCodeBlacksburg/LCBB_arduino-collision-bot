@@ -1,5 +1,5 @@
 ## Overview
-<IMG SRC=http://theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=200>
+<IMG SRC=http://theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=400>
 This is the code for the Let's Code Blacksburg Arduino, Sensors, Robotics Workshop
 https://www.eventbrite.com/e/18949799360
 
