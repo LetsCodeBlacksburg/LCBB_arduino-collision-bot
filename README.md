@@ -1,6 +1,6 @@
-## Overview
-<IMG SRC=http://theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=400>
-This is the code for the three hour, hands on [Lets Code Blacksburg Collision-Bot arduino Robotics Workshop](https://www.eventbrite.com/e/18949799360).. as well as the shorter, more intro level [Martian Laser-Bot coding activity] (https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/arduino-robotics-laser-bot-lab.pdf).
+## Overview <IMG SRC=http://theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=400>
+
+This is the code for the three hour, hands on [Lets Code Blacksburg Collision Bot arduino Robotics Workshop](https://www.eventbrite.com/e/18949799360).. as well as the shorter, more intro level [Martian Laser-Bot coding activity] (https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/arduino-robotics-laser-bot-lab.pdf).
 
 The collision-bot (aka "Laser Bot") workshop build document steps you through building a foam board, arduino based collision-avoidance bot. See PDF instruction and code below.  The collision-bot workshop takes around 3 hours and you can buy all the parts off Amazon or AliExpress.com for around $30.
 
@@ -40,8 +40,7 @@ For a stretch goal, have your more advanced students employ the getDist() functi
 
 
 ## Additional Martian Laser-Bot Mission: (intro level)
-The Laser-Bot Mission to Mars coding activity uses the previously built collision-bot (w/5000 µWatt laser cannon). The Martian Laser-Bot mission is a much less intensive, more intro level coding activity.  In this shorter (20 minute) intro  level hands on coding activity, each student is tasked with programming their already built, [code-complete](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/5c_Laser_Bot_Mission_to_Mars.ino) laser-bot rover to navigate the mountainous Martian terrain, find the alien armada, and take them out with their laser cannon before they launch their attack on Earth!  See photos and video here:
-https://photos.app.goo.gl/Kyo2fSg3D5SCUErP8
+The Laser-Bot Mission to Mars coding activity uses the previously built collision-bot (w/5000 µWatt laser cannon). The Martian Laser-Bot mission is a much less intensive, more intro level coding activity.  In this shorter (20 minute) intro  level hands on coding activity, each student is tasked with programming their already built, [code-complete](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/5c_Laser_Bot_Mission_to_Mars.ino) laser-bot rover to navigate the mountainous Martian terrain, find the alien armada, and take them out with their laser cannon before they launch their attack on Earth!  [See activity photos and video here](https://photos.app.goo.gl/Kyo2fSg3D5SCUErP8)
 
 All LCBB code and related materials are copy left (open sourced) under the Creative Commons (CC)(BY)(SA)[1] License.
 
