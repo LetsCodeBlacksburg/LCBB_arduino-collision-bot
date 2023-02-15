@@ -30,12 +30,12 @@ To get started on the hands on, three hour workshop to build and code your colli
 
 For a stretch goal, have your more advanced students employ the getDist() function in [5c_Laser_Bot_Mission_to_Mars.ino code](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/5c_Laser_Bot_Mission_to_Mars.ino) to detect objects in the bot's path to make your very own autonomous collision-avoiding robot, or even shoot things with the laser that get in the path of your robot!
 
-## Here's the parts list:
-* Arduino (brain, 1x) - https://www.amazon.com/dp/B01E8LKITO/ ($10)
-* Ultrasonic US-100 (eyes, 1x) - https://www.amazon.com/dp/B009URKD2E ($4)
-* KY-008 Laser - https://www.amazon.com/dp/B07216CZTV/  (<$5)
+## Here's the parts list: (updated 2023-02-14)
+* Arduino (brain, 1x) - https://www.amazon.com/dp/B085RHTBJT/ ($15)
+* Ultrasonic US-100 (eyes, 1x) - https://www.amazon.com/dp/B098R34Y12 ($8)
+* KY-008 Laser - https://www.amazon.com/dp/B07R45F1KY  ($5)
 * Servos (x2) - https://www.robotshop.com/en/9g-continuous-rotation-micro-servo.html ($10)
-* 9V Battery Case - https://www.amazon.com/dp/B06WGQKJ5P ($5)
+* 9V Battery Case - https://amazon.com/dp/B07T83B4SW/ ($3)
 * 9V Battery (~$2)
 
 
