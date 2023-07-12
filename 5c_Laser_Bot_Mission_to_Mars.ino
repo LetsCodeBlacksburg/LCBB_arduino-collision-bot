@@ -3,19 +3,29 @@
 // a laser to it, and making an easy, "macro mission" for kids to program and fire a laser at aliens.
 // Example code and documentation at https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot
 // Thomas "Tweeks" Weeks, tweeks-homework(at)theweeks.org
-// *NOTE* There's an error in the laser hardware configuration code. Can hyou find it?
-
+// *BUG* There's an error in the laser hardware configuration code. Can hyou find it?
+// 2023-07-12 - Added "begWheels" variable (0.1 - 0.7) for using larger wheels (1.0 for milk jug cap wheels)
 
 // ***********************************************************
 // ******* MAIN LOOP *****************************************
 // ***********************************************************
 // Runs forever...
 void loop() {      // anything starting with "//" is just a comment :)
-  pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
+  delay(5000);
+  //pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
 
 
   ////// Insert and fill in your code here
-  forward(10);      // This tells the bot how many inches forward to go.  
+  //forward(20);      // This tells the bot how many inches forward to go.  
+  stopAll();
+  turnR(90);
+  delay(500);
+  turnR(90);
+  delay(500);
+  turnR(90);
+  delay(500);
+  turnR(90);
+  delay(500);
   fireLaser(3);
   ////// end of your code
 
@@ -71,22 +81,27 @@ long dist = 0;
 Servo servoL;  // create servo object to control a servo
 Servo servoR;  // create servo object to control a servo
 
-// Servo Tunung
-// These values are just starting points. Every servo is a little different and so you may need to fine tune each.
-// Don't forget that depending n how you have your servos mounted, a value can go "forward" on one servo but "backward" on the other.
+// ***********************************************************
+// ******* SERVO TUNING **************************************
+// ***********************************************************
+// If your bot is "drifting" while sitting still, or veering to the left or right, this is the section you need.
+// These values below are just starting points. Every servo's a little different, so you may need to fine tune each.
+// Don't forget that depending how you have your servos mounted, a value can go "forward" on one servo but "backward" on the other.
 // You may need to tune the forward rev values to go in a straight line or turn.
 // You will probably need to tune the stopL and stopR values to get to a dead stop on each servo
-const int forwardL = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
-const int forwardR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
-const int reverseL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
-const int reverseR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
+// If using milk jug cap wheels, use bigWheels = 1.0. If larger, scale distances down to 0.5 - 0.7.
+const int reverseL = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
+const int reverseR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
+const int forwardL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
+const int forwardR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 
-const int stopL = 93;  // 90 is usually "stopped" (you may need to fine tune up/down for dead stop)
-const int stopR = 88;    // 90 is usually "stopped" (you may need to fine tune up/down it for dead stop)
+const int stopL = 90;  // 90 is usually "stopped" (you may need to fine tune up/down for dead stop)
+const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune up/down it for dead stop)
 
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
 const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
 const int angleMult = 6;     // Multiplier to convert turn angle into miliseconds of wheel movement (6 for tile, 7 for carpet)
+const float bigWheels=0.67;  // If using milkjug caps for wheels, use 1. For larger wheels, try 0.5 - 0.7
 const int backDelay = 200;  // Delay for slight back up before turning out of an obstacle
 
 int paused = true;        // Program starts off in paused mode
@@ -146,25 +161,25 @@ void setup() {
 
   
 // ***********************************************************
-// ***** turnR() *********************************************
+// ***** turnL() *********************************************
 // ***********************************************************
-void turnR(int angle){
-    Serial.println("turnR()");
+void turnL(int angle){
+    Serial.println("turnL()");
     servoL.write(forwardL);           // rotate L servo forward
     servoR.write(reverseR);           // rotate R servo reverse (which turns us right)
-    delay(angle*angleMult);                  // delay this amount to acheive angle
+    delay(angle*angleMult*bigWheels);                  // delay this amount to acheive angle
     stopAll();
 }
 
 
 // ***********************************************************
-// ***** turnL() *********************************************
+// ***** turnR() *********************************************
 // ***********************************************************
-void turnL(int angle){
-    Serial.println("turnL()");
+void turnR(int angle){
+    Serial.println("turnR()");
     servoL.write(forwardR);           // rotate R servo forward
     servoR.write(reverseL);           // rotate L servo reverse (which turns us left)
-    delay(angle*angleMult);                  // delay this amount to acheive angle
+    delay(angle*angleMult*bigWheels);                  // delay this amount to acheive angle
     stopAll();
 }
 
@@ -174,9 +189,9 @@ void turnL(int angle){
 // ***********************************************************
 void forward(int inches){
     Serial.println("forward()");
-    servoL.write(reverseR);           // rotate R servo forward (weird, I know)
-    servoR.write(reverseL);           // rotate L servo forward
-    delay( (inches * inchesMult));           // roughly convert inches to miliseconds of wheel rotations
+    servoL.write(forwardR);           // rotate R servo forward (weird, I know)
+    servoR.write(forwardL);           // rotate L servo forward
+    delay( (inches * inchesMult * bigWheels));           // roughly convert inches to miliseconds of wheel rotations
     stopAll();
 }
 
@@ -186,9 +201,9 @@ void forward(int inches){
 // ***********************************************************
 void backward(int inches){
     Serial.println("backward()");
-    servoL.write(forwardR);           // rotate R servo forward (weird, I know)
-    servoR.write(forwardL);           // rotate L servo forward
-    delay( (inches * inchesMult));           // roughly convert inches to miliseconds of wheel rotations
+    servoL.write(reverseR);           // rotate R servo forward (weird, I know)
+    servoR.write(reverseL);           // rotate L servo forward
+    delay( (inches * inchesMult * bigWheels));           // roughly convert inches to miliseconds of wheel rotations
     stopAll();
 }
 
