@@ -15,7 +15,7 @@ After you've built the laser-bot or have a few bots on hand, there is this more 
 ## Collision-Bot Workshop: (advanced level)
 To get started on the hands on, three hour workshop to build and code your collision-bots from scratch..
 
-1.  Download the [collision bot workshop build doc PDF](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/Arduino-robotics-collision-bot_build-doc.pdf) to build and code the bot. Required parts are a 5"x6" foam board, 2 milk jug caps, 1 soda cap, arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
+1.  Download the [collision bot workshop build doc PDF](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/Arduino-robotics-collision-bot_build-doc.pdf) to build and code the bot. Required parts are a 5"x6" foam board, 2 milk jug caps (if you got the servos without the wheels), 1 soda cap (dragger), arduino, two continuous servos and a US-100 ping sensor, optional 5mW laser and hot glue.)
 
 2. Download and run the 2_blink test code and verify your arduino hardware and software are working
 
