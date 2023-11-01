@@ -1,4 +1,4 @@
-## Overview <IMG SRC=http://www.theweeks.org/tmp/PICS/LCBB/laser-bot.png align=right width=400>
+## Overview <IMG SRC=http://www.theweeks.org/tmp/PICS/LCBB/laser-bot2_800.png align=right width=400>
 
 This is the code and courseware code for the hands on [Lets Code Blacksburg Collision Bot arduino Robotics Workshop](https://www.eventbrite.com/e/18949799360). It consist of a three hour, hands-on build & code worksop ([build-doc](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/Arduino-robotics-collision-bot_build-doc.pdf)), or, after building the bot, a shorter more intro level [Martian Laser-Bot navigation activity](https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot/blob/master/Mission-to-mars_robotics-laser-bot-lab.pdf).
 
