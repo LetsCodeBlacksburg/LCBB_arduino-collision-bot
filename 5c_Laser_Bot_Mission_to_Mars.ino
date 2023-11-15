@@ -4,32 +4,25 @@
 // Example code and documentation at https://github.com/LetsCodeBlacksburg/LCBB_arduino-collision-bot
 // Thomas "Tweeks" Weeks, tweeks-homework(at)theweeks.org
 // *BUG* There's an error in the laser hardware configuration code. Can hyou find it?
-// 2023-07-12 - Added "begWheels" variable (0.1 - 0.7) for using larger wheels (1.0 for milk jug cap wheels)
+// 2023-07-12 - Added "bigWheels" variable (0.5 - 0.7) for using larger wheels (1.0 for milk jug cap wheels)
 
 // ***********************************************************
 // ******* MAIN LOOP *****************************************
 // ***********************************************************
 // Runs forever...
 void loop() {      // anything starting with "//" is just a comment :)
-  delay(5000);
-  //pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
+  pauseNgo();       // This uses the ping-eyes sensor as a "start/pause" toggle switch
 
 
   ////// Insert and fill in your code here
-  //forward(20);      // This tells the bot how many inches forward to go.  
-  stopAll();
-  turnR(90);
-  delay(500);
-  turnR(90);
-  delay(500);
-  turnR(90);
-  delay(500);
-  turnR(90);
-  delay(500);
-  fireLaser(3);
+  //forward(10);      // This tells the bot how many inches forward to go.  
+
+  forward(20);        // This tells the bot how many inches forward to go.  
+  turnR(90);          // turn Right (x) degrees
+  fireLaser(3);       // Fires laser (x) times
   ////// end of your code
 
-  pause();          // Sets bot to pause mode
+  pause();          // Sets bot to pause mode (wave in front of eyes to start running)
   // loops back to top of main loop()
 }
 ////// HELP WITH COMMANDS:
@@ -95,8 +88,8 @@ const int reverseR = 45;    // 45 is Counter Clockwise, full speed (ardound 90 i
 const int forwardL = 45;    // 45 is Counter Clockwise, full speed (ardound 90 is stopped)
 const int forwardR = 135;   // 135 is Clockwise, full speed (around 90 is stopped)
 
-const int stopL = 90;  // 90 is usually "stopped" (you may need to fine tune up/down for dead stop)
-const int stopR = 90;    // 90 is usually "stopped" (you may need to fine tune up/down it for dead stop)
+const int stopL = 90;    // 90 is usually "stopped" (if inching CW, tune >90, if inching CCW, tune <90 (for dead stop))
+const int stopR = 90;    // 90 is usually "stopped" (if inching CW, tune >90, if inching CCW, tune <90 (for dead stop))
 
 // These distance and angle multipliers must be scaled along with servo supply voltage (e.g. 5v, 6v 9v, etc)
 const int inchesMult = 125;  // Multiplier to convert inches into miliseconds of wheel movement
@@ -337,6 +330,7 @@ void pauseNgo() {
   if (paused == false && dist < 2){
         Serial.println("UNPAUSED - I GO UNTIL I SEE SOMETHING CLOSE...");
   }
+  delay(50);
   while (paused == false && dist < 2 ) {
     dist = getdist();
     if (dist < 2 ) {
@@ -347,17 +341,19 @@ void pauseNgo() {
       servoR.write(stopR);                  // stop R servo
       paused = 1;
       waspaused = 0;
-      delay(250);
+      delay(50);
     }
   }
   
 
   // Paused Loop & Unpausing Detection  
   dist = getdist();
+  delay(50);
   if (paused == true){
     Serial.println("PAUSED - UNTIL I SEE SOMETHING CLOSE...");
   }
   while (paused == true) {
+    delay(50);
     dist = getdist();
     Serial.print(dist);
     Serial.print(" ");
